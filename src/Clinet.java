@@ -71,6 +71,7 @@ public class Clinet extends Application {
     }
     void handler(){
       Login.setOnAction(event->{
+          String first="";
           lout.setText("");
           if (online == true){
            lin.setText("You are already  logged in you have to log out first");
@@ -84,8 +85,13 @@ public class Clinet extends Application {
                   String pass = PWF.getText();
                   if (user.equals("") || pass.equals("")){
                      lin.setText("please enter password and/OR ID");
+                      oos.writeObject(My_actions.myactions.Loginrequest);
+                      first = "wrong";
+                      oos.writeObject(first);
                   } else {
                       oos.writeObject(My_actions.myactions.Loginrequest);
+                      first = "right";
+                      oos.writeObject(first);
                       oos.writeObject(user);
                       oos.writeObject(pass);
                       My_actions.myactions action = (My_actions.myactions) ois.readObject();

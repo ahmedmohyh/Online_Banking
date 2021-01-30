@@ -26,29 +26,34 @@ public class Connectionhandler implements Runnable {
             while (true){
                 My_actions.myactions actions =(My_actions.myactions)ois.readObject();
                 if (actions.equals(My_actions.myactions.Loginrequest)){
-                    System.out.println("Request Login Received");
-                    String user = (String)ois.readObject();
-                    String pass = (String)ois.readObject();
-                    PreparedStatement psmt = connection.prepareStatement("select * from banking.data where CustomerID = "+user+ " ;");
-                    ResultSet rs= psmt.executeQuery();
-                    int id = 0;
-                    String passrd ="";
-                    String s= "";
-                    while (rs.next()){
-                     id     =   rs.getInt("CustomerID");
-                     passrd = rs.getString("Password");
+                    String msg = (String)ois.readObject();
+                    if (msg.equals("wrong")){
+                        break;
                     }
-                    oos.writeObject(My_actions.myactions.loginresponse);
-                    if (id != 0 && passrd.equals(pass)){
-                  s= "You are logged in Successfully";
-                    oos.writeObject(s);
+                    else {
+                        System.out.println("Request Login Received");
+                        String user = (String) ois.readObject();
+                        String pass = (String) ois.readObject();
+                        PreparedStatement psmt = connection.prepareStatement("select * from banking.data where CustomerID = " + user + " ;");
+                        ResultSet rs = psmt.executeQuery();
+                        int id = 0;
+                        String passrd = "";
+                        String s = "";
+                        while (rs.next()) {
+                            id = rs.getInt("CustomerID");
+                            passrd = rs.getString("Password");
+                        }
+                        oos.writeObject(My_actions.myactions.loginresponse);
+                        if (id != 0 && passrd.equals(pass)) {
+                            s = "You are logged in Successfully";
+                            oos.writeObject(s);
 
+                        } else {
+                            s = "Unathorithed Cardinalties";
+                            oos.writeObject(s);
+                        }
+                        break;
                     }
-                    else{
-                        s= "Unathorithed Cardinalties";
-                        oos.writeObject(s);
-                    }
-                    break;
                 }
                 else if (actions.equals(My_actions.myactions.Balancerequest)){
                     double sal = 0;
